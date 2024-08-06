@@ -1,0 +1,6 @@
+# flyctl launch added from .gitignore
+data/*
+!data/README.txt
+dist/*
+!dist/README.txt
+fly.toml
