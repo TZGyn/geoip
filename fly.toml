@@ -23,6 +23,3 @@ primary_region = 'iad'
 
 [[vm]]
   size = 'shared-cpu-1x'
-
-[[restart]]
-  retries = 2
