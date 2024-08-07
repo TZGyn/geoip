@@ -10,3 +10,8 @@
 air # with air
 go run main.go # without air
 ```
+
+## API
+
+https://geoip.fly.dev/{ip}
+https://geoip.fly.dev/me
