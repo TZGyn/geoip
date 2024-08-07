@@ -2,3 +2,7 @@
 !/data/README.txt
 /dist/*
 !/dist/README.txt
+
+/tmp
+
+.env

@@ -17,15 +17,22 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/joho/godotenv"
 	"github.com/oschwald/geoip2-golang"
 	"github.com/robfig/cron/v3"
 )
 
 func main() {
 	fmt.Println("Initializing GeoLite2 DB...")
-	err := downloadAndExtractDB()
+
+	_, err := os.Stat("./data/GeoLite2-City.mmdb")
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("GeoLite2 DB Not Found...")
+		err := downloadAndExtractDB()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	db, err := geoip2.Open("./data/GeoLite2-City.mmdb")
@@ -44,11 +51,18 @@ func main() {
 	})
 
 	app.Get("/me", func(c *fiber.Ctx) error {
+		if len(c.IPs()) == 0 {
+			return c.JSON(fiber.Map{
+				"success": false,
+				"message": "No IP",
+			})
+		}
+
 		ip := c.IPs()[0]
 
 		record, err := getCity(db, ip)
 		if err != nil {
-			c.JSON(fiber.Map{
+			return c.JSON(fiber.Map{
 				"success": false,
 				"message": err.Error(),
 			})
@@ -164,10 +178,20 @@ func downloadAndExtractDB() error {
 		return err
 	}
 
+	err = os.Remove("./db.tar.gz")
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func downloadDB() error {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("No .env found")
+	}
+
 	accountID := os.Getenv("ACCOUNT_ID")
 	if len(accountID) == 0 {
 		return errors.New("please provide ACCOUNT_ID as env")
