@@ -4,6 +4,13 @@
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/LiUOsa?referralCode=bSruGU)
 
+## Deployment
+
+```bash
+go build main.go # compile
+ACCOUNT_ID={id} LICENSE_KEY={key} ./main # run
+```
+
 ## Development
 
 ```bash
